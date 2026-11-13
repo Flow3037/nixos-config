@@ -50,6 +50,30 @@
     swayidle
     mako           # notification
     libnotify
+
+    (writeShellScriptBin "nrs" ''
+      set -euo pipefail
+      cd ~/nixos
+      git add -A
+      git --no-pager diff --cached --stat
+      nixos-rebuild switch --flake ~/nixos --sudo
+      if git diff --cached --quiet; then
+        echo "Nothing to commit."
+      else
+        git commit -m "''${1:-update $(date '+%Y-%m-%d %H:%M')}"
+        git push
+      fi
+    '')
+
+    (writeShellScriptBin "nup" ''
+      set -euo pipefail
+      cd ~/nixos
+      nix flake update
+      git add flake.lock
+      nixos-rebuild switch --flake ~/nixos --sudo
+      git commit -m "flake update $(date '+%Y-%m-%d')" || true
+      git push
+    '')
   ];
 
   # laptop basics
