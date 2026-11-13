@@ -48,14 +48,9 @@
   environment.systemPackages = with pkgs; [
     git
     alacritty
-    fuzzel         # niri's default launcher (Super+D)
     brave
     brightnessctl
-    swaylock
-    swayidle
-    mako           # notification
     libnotify
-    wlsunset       # blue light filter
     kitty
 
     (writeShellScriptBin "nrs" ''
@@ -84,7 +79,6 @@
   ];
 
   # laptop basics
-  security.pam.services.swaylock = {};
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
   hardware.bluetooth.enable = true;
