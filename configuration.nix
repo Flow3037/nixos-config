@@ -52,6 +52,7 @@
     brightnessctl
     libnotify
     kitty
+    stow
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
