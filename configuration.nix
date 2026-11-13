@@ -50,6 +50,7 @@
     swayidle
     mako           # notification
     libnotify
+    wlsunset       # blue light filter
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
