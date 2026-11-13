@@ -25,7 +25,7 @@
 
   users.users.sai = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" ];
+    extraGroups = [ "wheel" "networkmanager" "video" "input" ];
   };
 
   programs.niri.enable = true;
@@ -56,6 +56,7 @@
     mako           # notification
     libnotify
     wlsunset       # blue light filter
+    kitty
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
