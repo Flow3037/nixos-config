@@ -31,6 +31,11 @@
   programs.niri.enable = true;
   systemd.user.services.niri.enableDefaultPath = false;
 
+  programs.dms-shell = {
+    enable = true;
+    systemd.enable = true;
+  };
+
   services.greetd = {
     enable = true;
     settings.default_session = {
