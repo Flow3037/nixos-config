@@ -63,6 +63,7 @@
     (inputs.fetch.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
       patches = (old.patches or [ ]) ++ [ ./fetch.patch ];
     }))
+    whitesur-cursors
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
@@ -102,6 +103,7 @@
         gtk-theme = "adw-gtk3-dark";
         color-scheme = "prefer-dark";
         icon-theme = "Papirus-Dark";
+        cursor-theme = "WhiteSur-cursors";
       };
     }];
   };
