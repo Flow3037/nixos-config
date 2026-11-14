@@ -53,6 +53,8 @@
     libnotify
     kitty
     stow
+    xarchiver
+    vesktop
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
@@ -83,6 +85,15 @@
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
   hardware.bluetooth.enable = true;
+
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs; [ thunar-archive-plugin thunar-volman ];
+  };
+  services.gvfs.enable = true;
+  services.tumbler.enable = true;
+
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   zramSwap.enable = true;
 
