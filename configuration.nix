@@ -56,6 +56,7 @@
     xarchiver
     vesktop
     duf
+    xwayland-satellite
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
