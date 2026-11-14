@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 {
   imports = [ ./hardware-configuration.nix ];
@@ -95,7 +95,14 @@
   services.upower.enable = true;
   hardware.bluetooth.enable = true;
 
-  fonts.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+    inter
+  ];
+  fonts.fontconfig.defaultFonts = {
+    sansSerif = [ "Inter Variable" ];
+    monospace = [ "JetBrainsMono Nerd Font" ];
+  };
   programs.dconf = {
     enable = true;
     profiles.user.databases = [{
@@ -104,6 +111,9 @@
         color-scheme = "prefer-dark";
         icon-theme = "Papirus-Dark";
         cursor-theme = "WhiteSur-cursors";
+        cursor-size = lib.gvariant.mkInt32 34;
+        font-name = "Inter Variable 11";
+        monospace-font-name = "JetBrainsMono Nerd Font 11";
       };
     }];
   };
