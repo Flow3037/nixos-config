@@ -58,6 +58,8 @@
     xwayland-satellite
     zed-editor
     vscode.fhs
+    adw-gtk3
+    papirus-icon-theme
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
@@ -88,6 +90,9 @@
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
   hardware.bluetooth.enable = true;
+
+  fonts.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
+  programs.dconf.enable = true;
 
   programs.nix-ld.enable = true;
 
