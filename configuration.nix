@@ -55,6 +55,7 @@
     stow
     xarchiver
     vesktop
+    duf
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
