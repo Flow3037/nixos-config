@@ -60,6 +60,7 @@
     vscode.fhs
     adw-gtk3
     papirus-icon-theme
+    fastfetch
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
