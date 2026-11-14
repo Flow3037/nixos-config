@@ -92,7 +92,16 @@
   hardware.bluetooth.enable = true;
 
   fonts.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
-  programs.dconf.enable = true;
+  programs.dconf = {
+    enable = true;
+    profiles.user.databases = [{
+      settings."org/gnome/desktop/interface" = {
+        gtk-theme = "adw-gtk3-dark";
+        color-scheme = "prefer-dark";
+        icon-theme = "Papirus-Dark";
+      };
+    }];
+  };
 
   programs.nix-ld.enable = true;
 
