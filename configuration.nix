@@ -60,8 +60,9 @@
     vscode.fhs
     adw-gtk3
     papirus-icon-theme
-    fastfetch
-    inputs.fetch.packages.${pkgs.stdenv.hostPlatform.system}.default
+    (inputs.fetch.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (old: {
+      patches = (old.patches or [ ]) ++ [ ./fetch.patch ];
+    }))
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail

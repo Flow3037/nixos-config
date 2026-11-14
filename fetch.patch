@@ -1,0 +1,166 @@
+diff --git a/fetch.c b/fetch.c
+index bb2169e..eae3f89 100644
+--- a/fetch.c
++++ b/fetch.c
+@@ -86,6 +86,7 @@ static void get_term_size(int *rows, int *cols) {
+ 
+ static int render_height = 36;
+ static int logo_height = 36;        // rows the logo may span (<= render_height)
++static int full_logo_height = 36;   // logo rows at full canvas width (placement)
+ static int anim_width = ANIM_WIDTH; // canvas columns, shrinks on narrow terminals
+ static int layout_stacked = 0;      // info below the logo instead of beside it
+ static int info_clip_cols = -1;     // clip info lines to this many visible columns
+@@ -3761,6 +3762,13 @@ static void apply_layout(int show_info) {
+     ideal = MAX_HEIGHT;
+ 
+   render_height = ideal;
++  // How tall the logo would be with the full 60-col canvas; used to keep
++  // the logo's centre in the same place when a narrow window shrinks it.
++  full_logo_height = ideal;
++  if (rows > 0 && full_logo_height > rows)
++    full_logo_height = rows;
++  if (full_logo_height > ANIM_WIDTH * 3 / 5)
++    full_logo_height = ANIM_WIDTH * 3 / 5;
+   anim_width = ANIM_WIDTH;
+   layout_stacked = 0;
+   info_clip_cols = -1;
+@@ -3826,6 +3834,29 @@ static void apply_layout(int show_info) {
+   }
+ }
+ 
++// Where to put the face-on logo vertically. At full size its top sits on
++// row 1 (row 0 is padding). When a narrow window shrinks the logo, keep its
++// centre where the full-size logo's centre would be, so it shrinks towards
++// the middle instead of hugging the top. Used at startup and on resize, so
++// the result doesn't depend on the size the terminal started at.
++static float logo_y_center(float K1, float K2) {
++  float u0 = 0, d0 = 0; // logo extent above/below centre per unit of K1
++  for (int i = 0; i < POINT_COUNT; i++) {
++    float zc = PZ[i] + K2;
++    if (zc < 0.1f) continue;
++    float ys = PY[i] / zc;
++    if (ys > u0) u0 = ys;
++    if (-ys > d0) d0 = -ys;
++  }
++  float up = K1 * u0, dn = K1 * d0;
++  float kf = 37.0f * full_logo_height / 36.0f * size_scale;
++  float target = 1.0f + kf * (u0 + d0) * 0.5f; // full-size logo's centre row
++  float yc = target + (up - dn) * 0.5f;        // put this logo's centre there
++  if (yc < up + 1.0f)
++    yc = up + 1.0f; // never above row 1
++  return yc;
++}
++
+ static void build_points(void) {
+   const float sx = 0.07f;
+   const float sy = 0.14f;
+@@ -4130,6 +4161,7 @@ int main(int argc, char **argv) {
+   int show_info = 1;
+   int use_color = 1;
+   int max_frames = 0;
++  int static_mode = 0; // --static: print one flat frame in place, then exit
+   const char *shading = NULL;
+   const char *shading_mode = NULL;
+   int box_flag = 0;
+@@ -4161,6 +4193,7 @@ int main(int argc, char **argv) {
+           "  --no-info                 Just the logo, no system info\n"
+           "  --no-color                Disable logo coloring\n"
+           "  --frames <n>              Stop after n frames (default 2000)\n"
++          "  --static                  Print the logo once, face-on, no animation\n"
+           "exit)\n"
+           "  --shading-mode <mode>     ascii (.,-~:;=!*#$@, the default), or "
+           "opt into\n"
+@@ -4284,6 +4317,8 @@ int main(int argc, char **argv) {
+         return 1;
+       depth_set = 1;
+       depth_user_set = 1;
++    } else if (strcmp(argv[i], "--static") == 0) {
++      static_mode = 1;
+     } else if (strcmp(argv[i], "--box") == 0) {
+       box_flag = 1;
+     } else {
+@@ -4444,8 +4479,8 @@ int main(int argc, char **argv) {
+     if (ys > face_up) face_up = ys;
+     if (-ys > face_dn) face_dn = -ys;
+   }
+-  // Place y_center so the logo top lands at row 1 (row 0 is padding)
+-  float fixed_y_center = face_up + 1.0f;
++  // Place the logo (top on row 1 at full size, same centre when shrunk)
++  float fixed_y_center = logo_y_center(K1, K2);
+ 
+   // Pre-compute Blinn-Phong half-vector (view direction is constant (0,0,-1))
+   const float hx0 = (light_x + 0.0f), hy0 = (light_y + 0.0f), hz0 = (light_z - 1.0f);
+@@ -4468,7 +4503,8 @@ int main(int argc, char **argv) {
+       render_height = needed;
+   }
+ 
+-  if (tcgetattr(STDIN_FILENO, &orig_termios) == 0) {
++  // Static mode never reads input, so leave the terminal as it is
++  if (!static_mode && tcgetattr(STDIN_FILENO, &orig_termios) == 0) {
+     termios_saved = 1;
+     struct termios raw = orig_termios;
+     raw.c_lflag &= ~(ICANON | ECHO);
+@@ -4477,8 +4513,10 @@ int main(int argc, char **argv) {
+     tcsetattr(STDIN_FILENO, TCSAFLUSH, &raw);
+   }
+ 
+-  printf("\033[?25l\033[?1002h\033[?1006h\033[2J");
+-  fflush(stdout);
++  if (!static_mode) { // static mode prints where the cursor is, no clear
++    printf("\033[?25l\033[?1002h\033[?1006h\033[2J");
++    fflush(stdout);
++  }
+ 
+   int mouse_dragging = 0;
+   int mouse_last_x = 0, mouse_last_y = 0;
+@@ -4490,7 +4528,7 @@ int main(int argc, char **argv) {
+     // Non-escape bytes stay in the buffer so the shell gets the keypress.
+     int should_break = 0;
+     struct pollfd pfd = {.fd = STDIN_FILENO, .events = POLLIN};
+-    while (poll(&pfd, 1, 0) > 0) {
++    while (!static_mode && poll(&pfd, 1, 0) > 0) {
+       static char ibuf[128];
+       static int ibuf_len = 0;
+ 
+@@ -4589,7 +4627,9 @@ int main(int argc, char **argv) {
+       apply_layout(show_info);
+       if (render_height != old_h || anim_width != old_w ||
+           layout_stacked != old_stacked || info_clip_cols != old_clip) {
+-        K1 = 37.0f * logo_height / 36.0f;
++        K1 = 37.0f * logo_height / 36.0f * size_scale;
++        // Re-place the logo for its new size, the same way startup does
++        fixed_y_center = logo_y_center(K1, K2);
+         printf("\033[2J");
+         fflush(stdout);
+       }
+@@ -4621,7 +4661,7 @@ int main(int argc, char **argv) {
+     }
+ 
+     clear_buf();
+-    if (!mouse_dragging) {
++    if (!static_mode && !mouse_dragging) { // static stays face-on
+       if (drag_vx != 0.0f || drag_vy != 0.0f) {
+         A += drag_vx;
+         B += drag_vy;
+@@ -4709,8 +4749,10 @@ int main(int argc, char **argv) {
+     }
+     char *p = out_buf;
+     char *end = out_buf + need - 8;
+-    *p++ = '\033'; *p++ = '[';
+-    *p++ = 'H';
++    if (!static_mode) { // static mode prints in place, no jump to the top
++      *p++ = '\033'; *p++ = '[';
++      *p++ = 'H';
++    }
+ 
+     // Pre-formatted reset + newline sequences
+     const char reset_seq[] = "\033[0m";
+@@ -4806,6 +4848,8 @@ int main(int argc, char **argv) {
+     }
+     if (write(STDOUT_FILENO, out_buf, p - out_buf) < 0)
+       break;
++    if (static_mode)
++      break; // one frame is all static mode draws
+     usleep(50000);
+   }
+ 
