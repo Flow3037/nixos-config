@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports = [ ./hardware-configuration.nix ];
@@ -61,6 +61,7 @@
     adw-gtk3
     papirus-icon-theme
     fastfetch
+    inputs.fetch.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
