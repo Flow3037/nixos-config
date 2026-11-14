@@ -84,5 +84,17 @@
   services.upower.enable = true;
   hardware.bluetooth.enable = true;
 
+  zramSwap.enable = true;
+
+  # weekly generation cleanup
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 15d";
+  };
+
+  # aussie aussie oi oi oi
+  i18n.defaultLocale = "en_AU.UTF-8";
+
   system.stateVersion = "26.05";
 }
