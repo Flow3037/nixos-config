@@ -58,6 +58,7 @@
     duf
     xwayland-satellite
     zed-editor
+    vscode.fhs
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
@@ -88,6 +89,8 @@
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
   hardware.bluetooth.enable = true;
+
+  programs.nix-ld.enable = true;
 
   programs.thunar = {
     enable = true;
