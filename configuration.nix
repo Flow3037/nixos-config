@@ -57,6 +57,7 @@
     vesktop
     duf
     xwayland-satellite
+    zed-editor
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
