@@ -28,6 +28,15 @@
     extraGroups = [ "wheel" "networkmanager" "video" "input" ];
   };
 
+  programs.git = {
+    enable = true;
+    config = {
+      user.name = "Sai Prakhya";
+      user.email = "prakhyasai37@gmail.com";
+      init.defaultBranch = "main";
+    };
+  };
+
   programs.niri.enable = true;
   systemd.user.services.niri.enableDefaultPath = false;
 
