@@ -25,16 +25,22 @@
 
   users.users.sai = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "video" "input" ];
+    extraGroups = [ "wheel" "networkmanager" "video" "input" "docker" ];
   };
 
   programs.git = {
     enable = true;
+    lfs.enable = true;
     config = {
       user.name = "Sai Prakhya";
       user.email = "prakhyasai37@gmail.com";
       init.defaultBranch = "main";
     };
+  };
+
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = false;
   };
 
   programs.niri.enable = true;
@@ -74,6 +80,8 @@
     whitesur-cursors
     loupe
     tree
+    gnumake
+    gh
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
