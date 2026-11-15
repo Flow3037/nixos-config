@@ -135,6 +135,15 @@
   services.gvfs.enable = true;
   services.tumbler.enable = true;
 
+# default apps
+  xdg.mime.defaultApplications = {
+    "inode/directory" = "thunar.desktop";
+    "x-scheme-handler/http" = "brave-browser.desktop";
+    "x-scheme-handler/https" = "brave-browser.desktop";
+    "text/html" = "brave-browser.desktop";
+    "application/pdf" = "brave-browser.desktop";
+  };
+
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
   zramSwap.enable = true;
