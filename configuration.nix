@@ -73,6 +73,7 @@
     }))
     whitesur-cursors
     loupe
+    tree
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
