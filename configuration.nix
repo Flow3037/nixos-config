@@ -72,6 +72,7 @@
       patches = (old.patches or [ ]) ++ [ ./fetch.patch ];
     }))
     whitesur-cursors
+    loupe
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
@@ -142,6 +143,10 @@
     "x-scheme-handler/https" = "brave-browser.desktop";
     "text/html" = "brave-browser.desktop";
     "application/pdf" = "brave-browser.desktop";
+    "image/png" = "org.gnome.Loupe.desktop";
+    "image/jpeg" = "org.gnome.Loupe.desktop";
+    "image/webp" = "org.gnome.Loupe.desktop";
+    "image/gif" = "org.gnome.Loupe.desktop";
   };
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
