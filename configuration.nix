@@ -35,6 +35,10 @@
       user.name = "Sai Prakhya";
       user.email = "prakhyasai37@gmail.com";
       init.defaultBranch = "main";
+      core.pager = "delta";
+      interactive.diffFilter = "delta --color-only";
+      delta.navigate = true;
+      merge.conflictStyle = "zdiff3";
     };
   };
 
@@ -82,13 +86,25 @@
     tree
     gnumake
     gh
+    nixd
+    nixfmt
+    ripgrep
+    fd
+    eza
+    jq
+    ncdu
+    tealdeer
+    wl-clipboard
+    delta
+    _7zz
+    unzip
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
       cd ~/nixos
       git add -A
       git --no-pager diff --cached --stat
-      nixos-rebuild switch --flake ~/nixos --sudo
+      nh os switch ~/nixos
       if git diff --cached --quiet; then
         echo "Nothing to commit."
       else
@@ -102,7 +118,7 @@
       cd ~/nixos
       nix flake update
       git add flake.lock
-      nixos-rebuild switch --flake ~/nixos --sudo
+      nh os switch ~/nixos
       git commit -m "flake update $(date '+%Y-%m-%d')" || true
       git push
     '')
@@ -137,6 +153,20 @@
   };
 
   programs.nix-ld.enable = true;
+
+  programs.nh = {
+    enable = true;
+    flake = "/home/sai/nixos";
+  };
+  programs.direnv.enable = true;
+  programs.fzf.keybindings = true;
+  programs.zoxide.enable = true;
+  programs.bat.enable = true;
+
+  environment.shellAliases = {
+    ll = "eza -l --git --icons";
+    lt = "eza --tree --level=2 --icons";
+  };
 
   programs.thunar = {
     enable = true;
