@@ -7,12 +7,19 @@
       url = "github:areofyl/fetch";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ nixpkgs, ... }: {
     nixosConfigurations.saislaptop = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
-      modules = [ ./configuration.nix ];
+      modules = [
+        ./configuration.nix
+        inputs.nix-index-database.nixosModules.default
+      ];
     };
   };
 }

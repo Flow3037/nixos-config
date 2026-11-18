@@ -98,6 +98,8 @@
     delta
     _7zz
     unzip
+    nix-tree
+    showtime
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
@@ -163,6 +165,10 @@
   programs.zoxide.enable = true;
   programs.bat.enable = true;
 
+  programs.nix-index-database.comma.enable = true;
+  programs.localsend.enable = true;
+  programs.kdeconnect.enable = true;
+
   environment.shellAliases = {
     ll = "eza -l --git --icons";
     lt = "eza --tree --level=2 --icons";
@@ -186,9 +192,14 @@
     "image/jpeg" = "org.gnome.Loupe.desktop";
     "image/webp" = "org.gnome.Loupe.desktop";
     "image/gif" = "org.gnome.Loupe.desktop";
+    "video/mp4" = "org.gnome.Showtime.desktop";
+    "video/x-matroska" = "org.gnome.Showtime.desktop";
+    "video/webm" = "org.gnome.Showtime.desktop";
+    "video/quicktime" = "org.gnome.Showtime.desktop";
   };
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  environment.sessionVariables.NH_SEARCH_CHANNEL = "nixos-26.05";
 
   zramSwap.enable = true;
 
