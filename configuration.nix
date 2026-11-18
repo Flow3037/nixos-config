@@ -200,6 +200,7 @@
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
   environment.sessionVariables.NH_SEARCH_CHANNEL = "nixos-26.05";
+  environment.etc."ssl/unsw/unsw-root.pem".source = ./certs/unsw-root.pem;
 
   zramSwap.enable = true;
 
