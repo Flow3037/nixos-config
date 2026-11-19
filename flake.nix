@@ -11,6 +11,10 @@
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    spicetify-nix = {
+      url = "github:Gerg-L/spicetify-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs@{ nixpkgs, ... }: {
@@ -19,6 +23,7 @@
       modules = [
         ./configuration.nix
         inputs.nix-index-database.nixosModules.default
+        inputs.spicetify-nix.nixosModules.default
       ];
     };
   };

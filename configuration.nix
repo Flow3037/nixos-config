@@ -167,6 +167,19 @@
 
   programs.nix-index-database.comma.enable = true;
   programs.localsend.enable = true;
+  programs.spicetify =
+    let
+      spicePkgs = inputs.spicetify-nix.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+    in
+    {
+      enable = true;
+      theme = spicePkgs.themes.comfy;
+      enabledExtensions = with spicePkgs.extensions; [
+        shuffle         # true random shuffle (Spotify's own isn't)
+        fullAppDisplay  # full-screen "now playing" view
+        spicyLyrics     # word-by-word karaoke-style lyrics
+      ];
+    };
   programs.kdeconnect.enable = true;
 
   environment.shellAliases = {
