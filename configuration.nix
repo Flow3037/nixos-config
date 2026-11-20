@@ -100,6 +100,7 @@
     unzip
     nix-tree
     showtime
+    libreoffice
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
