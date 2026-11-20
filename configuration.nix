@@ -101,6 +101,7 @@
     nix-tree
     showtime
     libreoffice
+    hunspellDicts.en_AU
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
@@ -135,6 +136,8 @@
   fonts.packages = with pkgs; [
     nerd-fonts.jetbrains-mono
     inter
+    carlito
+    caladea
   ];
   fonts.fontconfig.defaultFonts = {
     sansSerif = [ "Inter Variable" ];
