@@ -102,6 +102,7 @@
     showtime
     libreoffice
     hunspellDicts.en_AU
+    papers
 
     (writeShellScriptBin "nrs" ''
       set -euo pipefail
@@ -204,7 +205,7 @@
     "x-scheme-handler/http" = "brave-browser.desktop";
     "x-scheme-handler/https" = "brave-browser.desktop";
     "text/html" = "brave-browser.desktop";
-    "application/pdf" = "brave-browser.desktop";
+    "application/pdf" = "org.gnome.Papers.desktop";
     "image/png" = "org.gnome.Loupe.desktop";
     "image/jpeg" = "org.gnome.Loupe.desktop";
     "image/webp" = "org.gnome.Loupe.desktop";
